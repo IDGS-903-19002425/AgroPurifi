@@ -75,8 +75,8 @@ fun BarraNavegacion() {
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Destinations.phScreen.ruta, modifier = modifier) {
-        composable(Destinations.phScreen.ruta) { phScreen }
-        composable(Destinations.turbidezScreen.ruta) { turbidezScreen }
+        composable(Destinations.phScreen.ruta) { PHScreen() }
+        composable(Destinations.turbidezScreen.ruta) { TurbidezScreen() }
     }
 }
 

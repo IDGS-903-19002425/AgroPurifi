@@ -24,6 +24,7 @@ import com.android.agropurrifi.ui.theme.AgroPurrifiTheme
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
