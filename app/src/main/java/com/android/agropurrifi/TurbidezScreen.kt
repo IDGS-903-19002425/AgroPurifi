@@ -1,6 +1,5 @@
 package com.android.agropurrifi
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun TurbidezScreen() {
     var estatusConexion by remember { mutableStateOf("Desconectado") }
@@ -26,8 +24,8 @@ fun TurbidezScreen() {
     var estadoAgua by remember { mutableStateOf("Desconocido") }
 
     LaunchedEffect(Unit){
-        MQTTManager.conectar(
-            onMesagge = { nuevoValor ->
+        MQTTManager.conectarTurbidez(
+            onMessage = { nuevoValor ->
                 turbidez = nuevoValor
                 val turbidezDouble = turbidez.toDoubleOrNull() ?: 0.0
                 estadoAgua = when{
@@ -37,27 +35,24 @@ fun TurbidezScreen() {
                 }
             },
             onStatus = { status -> estatusConexion = status}
-    )
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        Text("Estado de la conexión: $estatusConexion", style = MaterialTheme.typography.bodyMedium)
+
+        Spacer(modifier = Modifier.padding(16.dp))
+        val turbidezDouble = turbidez.toDoubleOrNull() ?: 0.0
+        Text("Turbidez actual del agua: ${String.format("%.2f", turbidezDouble)} NTU", fontSize = 24.sp)
+        Text(estadoAgua, fontSize = 18.sp,color = when{
+            turbidezDouble <= 5 -> androidx.compose.ui.graphics.Color.Green
+            turbidezDouble in 5.01..19.0 -> androidx.compose.ui.graphics.Color.Yellow
+            else -> androidx.compose.ui.graphics.Color.Red
+        })
+    }
 }
-Column(
-    modifier = Modifier
-    .fillMaxSize()
-    .padding(16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-){
-    Text("Estado de la conexion: $estatusConexion", style = MaterialTheme.typography.bodyMedium)
-
-    Spacer(modifier = Modifier.padding(16.dp))
-    val turbidezDouble = turbidez.toDoubleOrNull() ?: 0.0
-    Text("Turbidez actual del agua: ${String.format("%.2f", turbidezDouble)} NTU", fontSize = 24.sp)
-    Text(estadoAgua, fontSize = 18.sp,color = when{
-        turbidezDouble <= 5 -> androidx.compose.ui.graphics.Color.Green
-        turbidezDouble in 5.01..19.0 -> androidx.compose.ui.graphics.Color.Yellow
-        else -> androidx.compose.ui.graphics.Color.Red
-    })
-}
-}
-
-
-
-
