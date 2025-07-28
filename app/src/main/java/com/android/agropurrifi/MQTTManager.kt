@@ -17,6 +17,8 @@ object MQTTManager {
     private val password = "12345678Aa"
     private val topicTurbidez = "esp32/turbidez"
     private val topicPH = "esp32/PH"
+    private val topicLimpiarAgua = "esp32/LimpiarAgua"
+    private val topicContinuarRiego = "esp32/ContinuarRiego"
     private var mqttClient : Mqtt5BlockingClient? = null
 
     // Callbacks para diferentes tipos de mensajes
@@ -34,6 +36,32 @@ object MQTTManager {
         onPHMessage = onMessage
         onStatusChange = onStatus
         conectar()
+    }
+
+    fun conectarAmbos(onPHMessage: (String) -> Unit, onTurbidezMessage: (String) -> Unit, onStatus: (String) -> Unit) {
+        this.onPHMessage = onPHMessage
+        this.onTurbidezMessage = onTurbidezMessage
+        onStatusChange = onStatus
+        conectar()
+    }
+
+    // Nueva función para publicar mensajes
+    fun publishMessage(topic: String, message: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                if (mqttClient?.state?.isConnected == true) {
+                    mqttClient!!.publishWith()
+                        .topic(topic)
+                        .payload(UTF_8.encode(message))
+                        .qos(MqttQos.AT_LEAST_ONCE)
+                        .send()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onStatusChange?.invoke("Error al enviar: ${e.message}")
+                }
+            }
+        }
     }
 
     private fun conectar(){
