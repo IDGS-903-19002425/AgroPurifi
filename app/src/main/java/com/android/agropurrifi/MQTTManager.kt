@@ -19,7 +19,9 @@ object MQTTManager {
     private val topicPH = "esp32/PH"
     private val topicLimpiarAgua = "esp32/LimpiarAgua"
     private val topicContinuarRiego = "esp32/ContinuarRiego"
-    private var mqttClient : Mqtt5BlockingClient? = null
+    private val topicCerrarLimpieza = "esp32/CerrarLimpieza"
+    private val topicCerrarRiego = "esp32/CerrarRiego"
+    internal var mqttClient : Mqtt5BlockingClient? = null
 
     // Callbacks para diferentes tipos de mensajes
     private var onTurbidezMessage: ((String) -> Unit)? = null
@@ -38,11 +40,26 @@ object MQTTManager {
         conectar()
     }
 
+
+
     fun conectarAmbos(onPHMessage: (String) -> Unit, onTurbidezMessage: (String) -> Unit, onStatus: (String) -> Unit) {
         this.onPHMessage = onPHMessage
         this.onTurbidezMessage = onTurbidezMessage
         onStatusChange = onStatus
         conectar()
+    }
+
+    fun abrirFiltroRiego(){
+        publishMessage(topicContinuarRiego,"1")
+    }
+    fun cerrarFiltroRiego(){
+        publishMessage(topicCerrarRiego,"0")
+    }
+    fun abrirFiltroLimpieza(){
+        publishMessage(topicLimpiarAgua,"1")
+    }
+    fun cerrarFiltroLimpieza(){
+        publishMessage(topicCerrarLimpieza,"0")
     }
 
     // Nueva función para publicar mensajes
@@ -64,7 +81,7 @@ object MQTTManager {
         }
     }
 
-    private fun conectar(){
+    internal fun conectar(){
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 if (mqttClient?.state?.isConnected == true) {

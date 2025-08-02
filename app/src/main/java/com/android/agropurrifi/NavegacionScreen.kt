@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.android.agropurrifi.Destinations.dashboardScreen
+import com.android.agropurrifi.Destinations.filtrosScreen
 import com.android.agropurrifi.Destinations.phScreen
 import com.android.agropurrifi.Destinations.turbidezScreen
 
@@ -51,24 +52,31 @@ fun BarraNavegacion() {
                         },
                         icon = {
                             when (destination) {
-                                is Destinations.dashboardScreen -> Icon(
+                                is dashboardScreen -> Icon(
                                     Icons.Default.Person,
                                     contentDescription = destination.label,
                                     tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
                                     modifier = Modifier.size(24.dp)
                                 )
-                                is Destinations.phScreen -> Icon(
+                                is phScreen -> Icon(
                                     Icons.Default.Home,
                                     contentDescription = destination.label,
                                     tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
                                     modifier = Modifier.size(24.dp)
                                 )
-                                is Destinations.turbidezScreen -> Icon(
+                                is turbidezScreen -> Icon(
                                     Icons.Default.Build,
                                     contentDescription = destination.label,
                                     tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
                                     modifier = Modifier.size(24.dp)
                                 )
+                                is filtrosScreen -> Icon(
+                                    Icons.Default.Build,
+                                    contentDescription = destination.label,
+                                    tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(24.dp)
+                                )
+
                             }
                         },
                         label = {
@@ -106,6 +114,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         composable(Destinations.dashboardScreen.ruta) { MainDashboard() }
         composable(Destinations.phScreen.ruta) { PHScreen() }
         composable(Destinations.turbidezScreen.ruta) { TurbidezScreen() }
+        composable(Destinations.filtrosScreen.ruta) { FiltrosScreen() }
     }
 }
 
