@@ -1,6 +1,7 @@
 package com.android.agropurrifi
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,8 +16,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -80,10 +83,10 @@ fun TurbidezScreen() {
                         .padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
+                    Image(
+                        painter = painterResource(id = R.drawable.turbidez),
                         contentDescription = null,
-                        tint = Color(0xFF06B6D4),
+                        colorFilter = ColorFilter.tint(Color(0xFF06B6D4)),
                         modifier = Modifier.size(48.dp)
                     )
                     Spacer(modifier = Modifier.width(16.dp))

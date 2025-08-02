@@ -1,3 +1,4 @@
+// BarraNavegacion.kt modificado
 package com.android.agropurrifi
 
 import androidx.compose.foundation.Image
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+// Removemos los imports de Material Icons que no usaremos
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,30 +55,28 @@ fun BarraNavegacion() {
                         icon = {
                             when (destination) {
                                 is dashboardScreen -> Icon(
-                                    Icons.Default.Person,
-                                    contentDescription = destination.label,
-                                    tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                is phScreen -> Icon(
                                     Icons.Default.Home,
                                     contentDescription = destination.label,
                                     tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
                                     modifier = Modifier.size(24.dp)
                                 )
-                                is turbidezScreen -> Icon(
-                                    Icons.Default.Build,
+                                is phScreen -> Image(
+                                    painter = painterResource(id = R.drawable.ph), // Ícono personalizado de pH
                                     contentDescription = destination.label,
-                                    tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(24.dp)
+                                    // Nota: Image no tiene tint, si necesitas colorear el ícono,
+                                    // asegúrate de que sea un vector drawable o usa Icon con ImageVector
+                                )
+                                is turbidezScreen -> Image(
+                                    painter = painterResource(id = R.drawable.turbidez), // Asumiendo que tienes turbidez.png
+                                    contentDescription = destination.label,
                                     modifier = Modifier.size(24.dp)
                                 )
-                                is filtrosScreen -> Icon(
-                                    Icons.Default.Build,
+                                is filtrosScreen -> Image(
+                                    painter = painterResource(id = R.drawable.filtrar), // Asumiendo que tienes filtrar.png
                                     contentDescription = destination.label,
-                                    tint = if (selectedItem == index) Color.White else Color.White.copy(alpha = 0.7f),
                                     modifier = Modifier.size(24.dp)
                                 )
-
                             }
                         },
                         label = {
@@ -99,19 +99,44 @@ fun BarraNavegacion() {
     ) { innerPadding ->
         AppNavHost(
             navController = navController,
+            selectedItem = selectedItem,
+            onItemSelected = { selectedItem = it },
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
 @Composable
-fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun AppNavHost(
+    navController: NavHostController,
+    selectedItem: Int,
+    onItemSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     NavHost(
         navController = navController,
         startDestination = Destinations.dashboardScreen.ruta,
         modifier = modifier
     ) {
-        composable(Destinations.dashboardScreen.ruta) { MainDashboard() }
+        composable(Destinations.dashboardScreen.ruta) {
+            MainDashboard(
+                onNavigateToFilters = {
+                    // Navegar a filtros y actualizar el item seleccionado
+                    navController.navigate(Destinations.filtrosScreen.ruta) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    // Actualizar el item seleccionado al índice de filtros
+                    val filtrosIndex = Destinations.items.indexOf(Destinations.filtrosScreen)
+                    if (filtrosIndex != -1) {
+                        onItemSelected(filtrosIndex)
+                    }
+                }
+            )
+        }
         composable(Destinations.phScreen.ruta) { PHScreen() }
         composable(Destinations.turbidezScreen.ruta) { TurbidezScreen() }
         composable(Destinations.filtrosScreen.ruta) { FiltrosScreen() }

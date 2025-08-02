@@ -17,12 +17,203 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilterControlCardWithCustomIcon(
+    title: String,
+    description: String,
+    iconDrawable: Int,
+    iconColor: Color,
+    isOpen: Boolean,
+    onOpenClick: () -> Unit,
+    onCloseClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.95f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = iconDrawable),
+                    contentDescription = null,
+                    tint = iconColor,
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = description,
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = if (isOpen) "Estado: ABIERTO" else "Estado: CERRADO",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isOpen) iconColor else Color(0xFFDC2626)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = onOpenClick,
+                    enabled = !isOpen,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = iconColor,
+                        disabledContainerColor = Color(0xFFE5E7EB)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "ABRIR",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Button(
+                    onClick = onCloseClick,
+                    enabled = isOpen,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFEF4444),
+                        disabledContainerColor = Color(0xFFE5E7EB)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "CERRAR",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SystemStatusIndicatorWithCustomIcon2(
+    label: String,
+    isActive: Boolean,
+    activeColor: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .background(
+                    if (isActive) activeColor else Color(0xFFEF4444),
+                    RoundedCornerShape(16.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.agualimpia),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = Color(0xFF6B7280),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = if (isActive) "ABIERTO" else "CERRADO",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isActive) activeColor else Color(0xFFDC2626),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun SystemStatusIndicatorWithCustomIcon(
+    label: String,
+    isActive: Boolean,
+    activeColor: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .background(
+                    if (isActive) activeColor else Color(0xFFEF4444),
+                    RoundedCornerShape(16.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.aspersor),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = Color(0xFF6B7280),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = if (isActive) "ABIERTO" else "CERRADO",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isActive) activeColor else Color(0xFFDC2626),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 @Composable
 fun FiltrosScreen(
     onNavigateBack: () -> Unit = {}
@@ -94,7 +285,7 @@ fun FiltrosScreen(
                                 .background(Color(0xFF059669).copy(alpha = 0.1f))
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
+                                imageVector = Icons.Default.Build,
                                 contentDescription = "Volver",
                                 tint = Color(0xFF059669),
                                 modifier = Modifier.size(24.dp)
@@ -145,16 +336,14 @@ fun FiltrosScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            SystemStatusIndicator(
+                            SystemStatusIndicatorWithCustomIcon(
                                 label = "Filtro Riego",
                                 isActive = irrigationFilterOpen,
-                                icon = Icons.Default.Build,
                                 activeColor = Color(0xFF10B981)
                             )
-                            SystemStatusIndicator(
+                            SystemStatusIndicatorWithCustomIcon2(
                                 label = "Filtro Limpieza",
                                 isActive = cleaningFilterOpen,
-                                icon = Icons.Default.Notifications,
                                 activeColor = Color(0xFF06B6D4)
                             )
                         }
@@ -164,10 +353,10 @@ fun FiltrosScreen(
 
             item {
                 // Filtro de Riego
-                FilterControlCard(
+                FilterControlCardWithCustomIcon(
                     title = "Filtro de Riego",
                     description = "Control del sistema de filtrado para riego",
-                    icon = Icons.Default.Check,
+                    iconDrawable = R.drawable.filtrar,
                     iconColor = Color(0xFF10B981),
                     isOpen = irrigationFilterOpen,
                     onOpenClick = {
@@ -187,10 +376,10 @@ fun FiltrosScreen(
 
             item {
                 // Filtro de Limpieza
-                FilterControlCard(
+                FilterControlCardWithCustomIcon(
                     title = "Filtro de Limpieza",
                     description = "Control del sistema de filtrado para limpieza",
-                    icon = Icons.Default.Edit,
+                    iconDrawable = R.drawable.filtrolimpio,
                     iconColor = Color(0xFF06B6D4),
                     isOpen = cleaningFilterOpen,
                     onOpenClick = {
